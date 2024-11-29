@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Features\Product\Application\Validations;
 
-use App\Common\Application\Exceptions\AppException;
 use App\Enums\MessagesEnum;
+use App\Exceptions\AppException;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;

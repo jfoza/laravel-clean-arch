@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace App\Common\Application\Dto;
 
-use App\Common\Domain\Dto\SearchParamsInterface;
-
-class SearchParams implements SearchParamsInterface
+trait SearchParams
 {
     const int DEFAULT_PER_PAGE = 100;
     const string DEFAULT_COLUMN_NAME = 'createdAt';

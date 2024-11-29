@@ -30,7 +30,6 @@ class Product extends Entity
 
     public string $uniqueName {
         get => $this->props->uniqueName->toString();
-        set => $this->props->uniqueName = new UniqueProductDescription($value);
     }
 
     public float $value {
@@ -53,21 +52,12 @@ class Product extends Entity
     }
 
     /**
-     * @throws InvalidArgumentException
-     * @throws ValidationException
-     */
-    private static function normalize(array $propsArr): ProductProps
-    {
-        return ProductValidator::normalize($propsArr);
-    }
-
-    /**
      * @throws ValidationException
      * @throws InvalidArgumentException
      */
-    public static function create(array $propsArr, ?string $uuid = null): Product
+    public static function create(ProductProps $props, ?string $uuid = null): Product
     {
-        $props = self::normalize($propsArr);
+        ProductValidator::validate($props);
         return new self($props, $uuid);
     }
 

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Features\Products\Application\Services;
 
-use App\Common\Application\Exceptions\AppException;
 use App\Enums\MessagesEnum;
+use App\Exceptions\AppException;
 use App\Features\Product\Application\Services\ProductListByUuidService;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;

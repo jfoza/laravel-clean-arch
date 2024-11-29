@@ -6,6 +6,7 @@ namespace Tests\Unit\Features\Products\Domain\Entities;
 use App\Common\Domain\Exceptions\InvalidArgumentException;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Props\ProductProps;
+use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
 use App\Libraries\Uuid\Uuid;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,22 +23,23 @@ class ProductTest extends TestCase
         $this->props = new ProductProps();
         $this->props->description = 'Test Description';
         $this->props->details = 'Test Details';
-        $this->props->uniqueName = 'test-description';
+        $this->props->uniqueName = UniqueProductDescription::assign('test-description');
         $this->props->value = 10.50;
         $this->props->quantity = 40;
         $this->props->active = true;
 
-        $this->sut = new Product($this->props);
+        $this->sut = Product::create($this->props);
     }
 
     public function testConstructMethod(): void
     {
         $uuid = Uuid::v4();
-        $product = new Product($this->props, $uuid);
+        $product = Product::create($this->props, $uuid);
 
         $this->assertEquals($this->props->description, $product->description);
         $this->assertEquals($this->props->details, $product->details);
-        $this->assertEquals($this->props->uniqueName, $product->uniqueName);
+        $this->assertEquals($this->props->uniqueName->toString(), $product->uniqueName);
+        $this->assertInstanceOf(UniqueProductDescription::class, $this->props->uniqueName);
         $this->assertEquals($this->props->value, $product->value);
         $this->assertEquals($this->props->quantity, $product->quantity);
         $this->assertEquals($this->props->active, $product->active);
@@ -47,7 +49,7 @@ class ProductTest extends TestCase
         $propsWithoutCreatedAt = clone $this->props;
         $propsWithoutCreatedAt->createdAt = null;
 
-        $productWithoutCreatedAt = new Product($propsWithoutCreatedAt);
+        $productWithoutCreatedAt = Product::create($propsWithoutCreatedAt);
 
         $this->assertNotNull($productWithoutCreatedAt->createdAt);
     }
@@ -66,7 +68,7 @@ class ProductTest extends TestCase
 
     public function testGetterUniqueNameField()
     {
-        $this->assertEquals($this->sut->uniqueName, $this->props->uniqueName);
+        $this->assertEquals($this->sut->uniqueName, $this->props->uniqueName->toString());
         $this->assertIsString($this->sut->uniqueName);
     }
 
@@ -108,13 +110,6 @@ class ProductTest extends TestCase
         $this->assertIsString($this->sut->details);
     }
 
-    public function testSetterUniqueNameField()
-    {
-        $this->sut->uniqueName = 'New unique name';
-        $this->assertEquals('New unique name', $this->sut->uniqueName);
-        $this->assertIsString($this->sut->uniqueName);
-    }
-
     public function testSetterValueField()
     {
         $this->sut->value = 68.99;
@@ -137,7 +132,7 @@ class ProductTest extends TestCase
 
     public function testCreateMethodShouldReturnProductInstance()
     {
-        $product = $this->sut::create(get_object_vars($this->props));
+        $product = $this->sut::create($this->props);
 
         $this->assertInstanceOf(Product::class, $product);
     }
@@ -149,7 +144,7 @@ class ProductTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
 
-        $this->sut::create(get_object_vars($this->props));
+        $this->sut::create($this->props);
     }
 
     public function testCreateMethodShouldReturnExceptionIfQuantityIsLessThanZero()
@@ -159,6 +154,6 @@ class ProductTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
 
-        $this->sut::create(get_object_vars($this->props));
+        $this->sut::create($this->props);
     }
 }

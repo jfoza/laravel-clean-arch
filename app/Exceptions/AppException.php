@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Common\Application\Exceptions;
+namespace App\Exceptions;
 
 use App\Enums\EnvironmentEnum;
 use App\Enums\MessagesEnum;

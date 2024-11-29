@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
-abstract class Mapper
+abstract class EloquentModelMapper
 {
     abstract public function from(EloquentModel $model): Entity;
 

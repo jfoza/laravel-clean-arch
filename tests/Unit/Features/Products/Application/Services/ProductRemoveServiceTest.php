@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Features\Products\Application\Services;
 
-use App\Common\Application\Exceptions\AppException;
 use App\Common\Application\Transaction;
 use App\Enums\MessagesEnum;
+use App\Exceptions\AppException;
 use App\Features\Product\Application\Services\ProductRemoveService;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use App\Libraries\Uuid\Uuid;

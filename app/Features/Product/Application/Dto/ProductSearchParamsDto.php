@@ -6,8 +6,10 @@ namespace App\Features\Product\Application\Dto;
 use App\Common\Application\Dto\SearchParams;
 use App\Features\Product\Domain\Dto\ProductSearchParamsDtoInterface;
 
-class ProductSearchParamsDto extends SearchParams implements ProductSearchParamsDtoInterface
+class ProductSearchParamsDto implements ProductSearchParamsDtoInterface
 {
+    use SearchParams;
+
     public string|null $description {
         get => $this->description;
         set => $this->description = $value ?: null;

@@ -9,10 +9,5 @@ use App\Providers\AppServiceProvider;
 
 class CommonProvider extends AppServiceProvider
 {
-    public function register(): void
-    {
-        parent::register();
-
-        $this->app->singleton(Transaction::class, LaravelTransaction::class);
-    }
+    public array $singletons = [Transaction::class => LaravelTransaction::class];
 }

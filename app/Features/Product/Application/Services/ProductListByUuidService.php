@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Product\Application\Services;
 
 use App\Common\Application\Application;
-use App\Common\Application\Exceptions\AppException;
+use App\Exceptions\AppException;
 use App\Features\Product\Application\Validations\ProductValidations;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;

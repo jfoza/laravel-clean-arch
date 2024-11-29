@@ -5,9 +5,9 @@ namespace App\Features\Product\Domain\Dto;
 
 interface ProductCreateDtoInterface
 {
-    public string $description { get; }
-    public string|null $details { get; }
-    public string $validate { get; }
-    public float $value { get; }
-    public int $quantity { get; }
+    public string $description { get; set; }
+    public string|null $details { get; set; }
+    public string $validate { get; set; }
+    public float $value { get; set; }
+    public int $quantity { get; set; }
 }

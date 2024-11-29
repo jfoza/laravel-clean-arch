@@ -7,7 +7,7 @@ use App\Common\Domain\Entities\Paginator;
 use App\Features\Product\Domain\Dto\ProductSearchParamsDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
-use App\Features\Product\Infra\Database\Eloquent\Mappers\ProductMapper;
+use App\Features\Product\Infra\Database\Eloquent\Mappers\EloquentProductMapper;
 use App\Features\Product\Infra\Database\Eloquent\Models\EloquentProductModel;
 use Illuminate\Support\Collection;
 
@@ -15,7 +15,7 @@ readonly class EloquentProductRepository implements ProductRepositoryInterface
 {
     public function __construct(
         private EloquentProductModel $eloquentProductModel,
-        private ProductMapper $productMapper
+        private EloquentProductMapper $productMapper
     )
     {
     }

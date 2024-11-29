@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Features\Products\Application\Services;
 
-use App\Common\Application\Exceptions\AppException;
 use App\Common\Application\Transaction;
 use App\Enums\MessagesEnum;
+use App\Exceptions\AppException;
 use App\Features\Product\Application\Dto\ProductCreateDto;
 use App\Features\Product\Application\Services\ProductCreateService;
 use App\Features\Product\Domain\Dto\ProductCreateDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
+use App\Features\Product\Domain\Props\ProductProps;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,8 @@ class ProductCreateServiceTest extends TestCase
 
         $this->sut = new ProductCreateService($this->productRepositoryMock);
         $this->sut->transaction = $this->createMock(Transaction::class);
+
+        $this->setProtectedProperty($this->sut, 'props', new ProductProps());
     }
 
     public function testShouldCreateNewProduct(): void

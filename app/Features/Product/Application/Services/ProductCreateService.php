@@ -4,18 +4,23 @@ declare(strict_types=1);
 namespace App\Features\Product\Application\Services;
 
 use App\Common\Application\Application;
-use App\Common\Application\Exceptions\AppException;
+use App\Exceptions\AppException;
 use App\Features\Product\Application\Validations\ProductValidations;
 use App\Features\Product\Domain\Dto\ProductCreateDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
+use App\Features\Product\Domain\Props\ProductProps;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use App\Features\Product\Domain\Services\ProductCreateServiceInterface;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
+use App\Libraries\LaravelInjectable\Src\Inject;
 use Exception;
 
 class ProductCreateService extends Application implements ProductCreateServiceInterface
 {
-    public function __construct(private readonly ProductRepositoryInterface $productRepository)
+    #[Inject(ProductProps::class)]
+    protected ProductProps $props;
+
+    public function __construct(protected readonly ProductRepositoryInterface $productRepository)
     {
     }
 
@@ -30,14 +35,9 @@ class ProductCreateService extends Application implements ProductCreateServiceIn
         $this->transaction->begin();
 
         try {
-            $product = Product::create([
-                'description' => $productCreateDTO->description,
-                'details' => $productCreateDTO->details,
-                'uniqueName' => UniqueProductDescription::create($productCreateDTO->description),
-                'value' => $productCreateDTO->value,
-                'quantity' => $productCreateDTO->quantity,
-                'active' => true,
-            ]);
+            $this->setProps($productCreateDTO);
+
+            $product = Product::create($this->props);
 
             $this->productRepository->create($product);
 
@@ -49,5 +49,15 @@ class ProductCreateService extends Application implements ProductCreateServiceIn
 
             throw $e;
         }
+    }
+
+    private function setProps(ProductCreateDtoInterface $productCreateDTO): void
+    {
+        $this->props->description = $productCreateDTO->description;
+        $this->props->details = $productCreateDTO->details;
+        $this->props->uniqueName = UniqueProductDescription::create($productCreateDTO->description);
+        $this->props->value = $productCreateDTO->value;
+        $this->props->quantity = $productCreateDTO->quantity;
+        $this->props->active = true;
     }
 }

@@ -12,36 +12,23 @@ use Illuminate\Validation\ValidationException;
 class ProductValidator
 {
     /**
-     * @throws ValidationException|InvalidArgumentException
-     */
-    public static function normalize(array $data): ProductProps {
-        $validated = self::validate($data);
-
-        $productProps = new ProductProps();
-        $productProps->description = $validated['description'];
-        $productProps->details = $validated['details'] ?? null;
-        $productProps->uniqueName = $validated['uniqueName'];
-        $productProps->value = $validated['value'];
-        $productProps->quantity = $validated['quantity'];
-        $productProps->active = $validated['active'];
-        $productProps->createdAt = $validated['createdAt'] ?? null;
-
-        return $productProps;
-    }
-
-    /**
      * @throws InvalidArgumentException|ValidationException
      */
-    public static function validate(array $data): array
+    public static function validate(ProductProps $props): array
     {
+        $data = get_object_vars($props);
+
         $rules = [
             'description' => 'required|string|max:255',
             'details' => 'nullable|string|max:500',
-            'uniqueName' => ['required', function ($attribute, $value, $fail) {
-                if (!$value instanceof UniqueProductDescription) {
-                    $fail("The field $attribute is invalid.");
-                }
-            }],
+            'uniqueName' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!$value instanceof UniqueProductDescription) {
+                        $fail("The $attribute is invalid.");
+                    }
+                },
+            ],
             'value' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'active' => 'required|boolean',

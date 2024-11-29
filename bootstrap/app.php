@@ -1,7 +1,7 @@
 <?php
 
-use App\Common\Application\Exceptions\AppException;
-use App\Common\Application\Exceptions\HandlerExceptions;
+use App\Exceptions\AppException;
+use App\Exceptions\HandlerExceptions;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;

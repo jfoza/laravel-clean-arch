@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     public array $bindings = [];
+    public array $singletons = [];
 
     /**
      * Register any application services.
