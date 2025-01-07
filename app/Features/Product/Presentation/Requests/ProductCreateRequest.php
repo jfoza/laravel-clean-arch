@@ -13,7 +13,6 @@ class ProductCreateRequest extends FormRequest
             'description' => 'required|string',
             'details' => 'nullable|string',
             'value' => 'required|numeric',
-            'validate' => 'required|date',
             'quantity' => 'required|integer',
         ];
     }
@@ -24,7 +23,6 @@ class ProductCreateRequest extends FormRequest
             'description' => 'Description',
             'details' => 'Details',
             'value' => 'Value',
-            'validate' => 'Validate',
             'quantity' => 'Quantity',
             'active' => 'nullable|boolean',
         ];

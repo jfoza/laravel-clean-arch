@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace App\Features\Product\Domain\Entities;
 
 use App\Common\Domain\Entities\Entity;
-use App\Common\Domain\Exceptions\InvalidArgumentException;
+use App\Common\Domain\ValueObjects\Date;
+use App\Common\Domain\ValueObjects\UniqueEntityId;
 use App\Features\Product\Domain\Props\ProductProps;
-use App\Features\Product\Domain\Validators\ProductValidator;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
-use Illuminate\Validation\ValidationException;
 
 class Product extends Entity
 {
-    private function __construct(private readonly ProductProps $props, ?string $uuid = null)
+    private function __construct(private readonly ProductProps $props, ?UniqueEntityId $uniqueEntityId = null)
     {
-        $this->props->createdAt = $this->props->createdAt ?: $this->currentDate;
-        parent::__construct($uuid);
+        $this->props->createdAt = $this->props->createdAt ?: Date::create();
+        parent::__construct($uniqueEntityId);
     }
 
     public string $description {
@@ -48,17 +47,12 @@ class Product extends Entity
     }
 
     public string $createdAt {
-        get => $this->props->createdAt;
+        get => $this->props->createdAt->toValue();
     }
 
-    /**
-     * @throws ValidationException
-     * @throws InvalidArgumentException
-     */
-    public static function create(ProductProps $props, ?string $uuid = null): Product
+    public static function create(ProductProps $props, ?UniqueEntityId $uniqueEntityId = null): Product
     {
-        ProductValidator::validate($props);
-        return new self($props, $uuid);
+        return new self($props, $uniqueEntityId);
     }
 
     public function updateUniqueName(UniqueProductDescription $uniqueProductDescription): void

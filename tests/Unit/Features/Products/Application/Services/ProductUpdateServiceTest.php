@@ -5,7 +5,8 @@ namespace Tests\Unit\Features\Products\Application\Services;
 
 use App\Common\Application\Transaction;
 use App\Enums\MessagesEnum;
-use App\Exceptions\AppException;
+use App\Exceptions\ConflictHttpException;
+use App\Exceptions\NotFoundHttpException;
 use App\Features\Product\Application\Dto\ProductUpdateDto;
 use App\Features\Product\Application\Services\ProductUpdateService;
 use App\Features\Product\Domain\Dto\ProductUpdateDtoInterface;
@@ -65,9 +66,9 @@ class ProductUpdateServiceTest extends TestCase
             ->method('findByUuid')
             ->willReturn(null);
 
-        $this->expectException(AppException::class);
+        $this->expectException(NotFoundHttpException::class);
         $this->expectExceptionCode(Response::HTTP_NOT_FOUND);
-        $this->expectExceptionMessage(json_encode(MessagesEnum::PRODUCT_NOT_EXISTS));
+        $this->expectExceptionMessage(MessagesEnum::PRODUCT_NOT_EXISTS);
 
         $this->sut->execute(Uuid::v4(), $this->productUpdateDto);
     }
@@ -87,9 +88,9 @@ class ProductUpdateServiceTest extends TestCase
             ->method('findByName')
             ->willReturn($product2);
 
-        $this->expectException(AppException::class);
+        $this->expectException(ConflictHttpException::class);
         $this->expectExceptionCode(Response::HTTP_CONFLICT);
-        $this->expectExceptionMessage(json_encode(MessagesEnum::PRODUCT_NAME_ALREADY_EXISTS));
+        $this->expectExceptionMessage(MessagesEnum::PRODUCT_NAME_ALREADY_EXISTS);
 
         $this->sut->execute(Uuid::v4(), $this->productUpdateDto);
     }

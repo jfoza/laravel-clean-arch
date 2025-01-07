@@ -26,9 +26,4 @@ class ProductCreateDto implements ProductCreateDtoInterface
         get => $this->quantity;
         set => $this->quantity = $value;
     }
-
-    public string $validate {
-        get => $this->validate;
-        set => $this->validate = $value;
-    }
 }

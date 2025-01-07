@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Features\Product\Domain\Validators;
 
-use App\Common\Domain\Exceptions\InvalidArgumentException;
+use App\Exceptions\InvalidArgumentException;
 use App\Features\Product\Domain\Props\ProductProps;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
 use Illuminate\Support\Facades\Validator;

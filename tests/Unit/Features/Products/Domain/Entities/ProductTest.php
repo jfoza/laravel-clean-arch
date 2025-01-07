@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Features\Products\Domain\Entities;
 
-use App\Common\Domain\Exceptions\InvalidArgumentException;
+use App\Common\Domain\ValueObjects\Date;
+use App\Common\Domain\ValueObjects\UniqueEntityId;
+use App\Features\Product\Application\Factory\ProductFactory;
 use App\Features\Product\Domain\Entities\Product;
 use App\Features\Product\Domain\Props\ProductProps;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
 use App\Libraries\Uuid\Uuid;
-use DateTimeImmutable;
-use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -20,7 +20,7 @@ class ProductTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->props = new ProductProps();
+        $this->props = ProductFactory::productProps();
         $this->props->description = 'Test Description';
         $this->props->details = 'Test Details';
         $this->props->uniqueName = UniqueProductDescription::assign('test-description');
@@ -34,7 +34,7 @@ class ProductTest extends TestCase
     public function testConstructMethod(): void
     {
         $uuid = Uuid::v4();
-        $product = Product::create($this->props, $uuid);
+        $product = Product::create($this->props, UniqueEntityId::create($uuid));
 
         $this->assertEquals($this->props->description, $product->description);
         $this->assertEquals($this->props->details, $product->details);
@@ -43,7 +43,8 @@ class ProductTest extends TestCase
         $this->assertEquals($this->props->value, $product->value);
         $this->assertEquals($this->props->quantity, $product->quantity);
         $this->assertEquals($this->props->active, $product->active);
-        $this->assertEquals($this->props->createdAt, $product->createdAt);
+        $this->assertEquals($this->props->createdAt->toValue(), $product->createdAt);
+        $this->assertInstanceOf(Date::class, $this->props->createdAt);
         $this->assertEquals($uuid, $product->uuid);
 
         $propsWithoutCreatedAt = clone $this->props;
@@ -92,7 +93,7 @@ class ProductTest extends TestCase
 
     public function testGetterCreatedAtField()
     {
-        $this->assertEquals($this->sut->createdAt, $this->props->createdAt);
+        $this->assertEquals($this->sut->createdAt, $this->props->createdAt->toValue());
         $this->assertIsString($this->sut->createdAt);
     }
 
@@ -135,25 +136,5 @@ class ProductTest extends TestCase
         $product = $this->sut::create($this->props);
 
         $this->assertInstanceOf(Product::class, $product);
-    }
-
-    public function testCreateMethodShouldReturnExceptionIfValueIsLessThanZero()
-    {
-        $this->props->value = -1;
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
-
-        $this->sut::create($this->props);
-    }
-
-    public function testCreateMethodShouldReturnExceptionIfQuantityIsLessThanZero()
-    {
-        $this->props->quantity = -1;
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
-
-        $this->sut::create($this->props);
     }
 }

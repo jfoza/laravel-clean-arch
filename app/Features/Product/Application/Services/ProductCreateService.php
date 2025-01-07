@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Features\Product\Application\Services;
 
 use App\Common\Application\Application;
-use App\Exceptions\AppException;
+use App\Exceptions\ConflictHttpException;
+use App\Exceptions\InvalidArgumentException;
+use App\Features\Product\Application\Factory\ProductFactory;
 use App\Features\Product\Application\Validations\ProductValidations;
 use App\Features\Product\Domain\Dto\ProductCreateDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
@@ -14,19 +16,18 @@ use App\Features\Product\Domain\Services\ProductCreateServiceInterface;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
 use App\Libraries\LaravelInjectable\Src\Inject;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class ProductCreateService extends Application implements ProductCreateServiceInterface
 {
-    #[Inject(ProductProps::class)]
-    protected ProductProps $props;
-
     public function __construct(protected readonly ProductRepositoryInterface $productRepository)
     {
     }
 
     /**
-     * @throws AppException
-     * @throws Exception
+     * @throws ConflictHttpException
+     * @throws ValidationException
+     * @throws InvalidArgumentException
      */
     public function execute(ProductCreateDtoInterface $productCreateDTO): Product
     {
@@ -35,9 +36,16 @@ class ProductCreateService extends Application implements ProductCreateServiceIn
         $this->transaction->begin();
 
         try {
-            $this->setProps($productCreateDTO);
+            $props = ProductFactory::productProps();
 
-            $product = Product::create($this->props);
+            $props->description = $productCreateDTO->description;
+            $props->details = $productCreateDTO->details;
+            $props->uniqueName = UniqueProductDescription::create($productCreateDTO->description);
+            $props->value = $productCreateDTO->value;
+            $props->quantity = $productCreateDTO->quantity;
+            $props->active = true;
+
+            $product = Product::create($props);
 
             $this->productRepository->create($product);
 
@@ -49,15 +57,5 @@ class ProductCreateService extends Application implements ProductCreateServiceIn
 
             throw $e;
         }
-    }
-
-    private function setProps(ProductCreateDtoInterface $productCreateDTO): void
-    {
-        $this->props->description = $productCreateDTO->description;
-        $this->props->details = $productCreateDTO->details;
-        $this->props->uniqueName = UniqueProductDescription::create($productCreateDTO->description);
-        $this->props->value = $productCreateDTO->value;
-        $this->props->quantity = $productCreateDTO->quantity;
-        $this->props->active = true;
     }
 }

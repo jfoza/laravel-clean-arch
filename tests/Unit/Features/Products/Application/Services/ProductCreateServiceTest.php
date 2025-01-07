@@ -5,12 +5,11 @@ namespace Tests\Unit\Features\Products\Application\Services;
 
 use App\Common\Application\Transaction;
 use App\Enums\MessagesEnum;
-use App\Exceptions\AppException;
+use App\Exceptions\ConflictHttpException;
 use App\Features\Product\Application\Dto\ProductCreateDto;
 use App\Features\Product\Application\Services\ProductCreateService;
 use App\Features\Product\Domain\Dto\ProductCreateDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
-use App\Features\Product\Domain\Props\ProductProps;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,8 +35,6 @@ class ProductCreateServiceTest extends TestCase
 
         $this->sut = new ProductCreateService($this->productRepositoryMock);
         $this->sut->transaction = $this->createMock(Transaction::class);
-
-        $this->setProtectedProperty($this->sut, 'props', new ProductProps());
     }
 
     public function testShouldCreateNewProduct(): void
@@ -59,9 +56,9 @@ class ProductCreateServiceTest extends TestCase
             ->method('findByName')
             ->willReturn(ProductDataBuilder::getProduct());
 
-        $this->expectException(AppException::class);
+        $this->expectException(ConflictHttpException::class);
         $this->expectExceptionCode(Response::HTTP_CONFLICT);
-        $this->expectExceptionMessage(json_encode(MessagesEnum::PRODUCT_NAME_ALREADY_EXISTS));
+        $this->expectExceptionMessage(MessagesEnum::PRODUCT_NAME_ALREADY_EXISTS);
 
         $this->sut->execute($this->productCreateDto);
     }

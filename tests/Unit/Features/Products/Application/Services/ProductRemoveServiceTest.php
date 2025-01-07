@@ -5,7 +5,7 @@ namespace Tests\Unit\Features\Products\Application\Services;
 
 use App\Common\Application\Transaction;
 use App\Enums\MessagesEnum;
-use App\Exceptions\AppException;
+use App\Exceptions\NotFoundHttpException;
 use App\Features\Product\Application\Services\ProductRemoveService;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use App\Libraries\Uuid\Uuid;
@@ -47,9 +47,9 @@ class ProductRemoveServiceTest extends TestCase
             ->method('findByUuid')
             ->willReturn(null);
 
-        $this->expectException(AppException::class);
+        $this->expectException(NotFoundHttpException::class);
         $this->expectExceptionCode(Response::HTTP_NOT_FOUND);
-        $this->expectExceptionMessage(json_encode(MessagesEnum::PRODUCT_NOT_EXISTS));
+        $this->expectExceptionMessage(MessagesEnum::PRODUCT_NOT_EXISTS);
 
         $this->sut->execute(Uuid::v4());
     }

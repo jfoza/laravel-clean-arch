@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Product\Application\Services;
 
 use App\Common\Application\Application;
-use App\Exceptions\AppException;
+use App\Exceptions\NotFoundHttpException;
 use App\Features\Product\Application\Validations\ProductValidations;
 use App\Features\Product\Domain\Repositories\ProductRepositoryInterface;
 use App\Features\Product\Domain\Services\ProductRemoveServiceInterface;
@@ -17,7 +17,7 @@ class ProductRemoveService extends Application implements ProductRemoveServiceIn
     }
 
     /**
-     * @throws AppException
+     * @throws NotFoundHttpException
      * @throws Exception
      */
     public function execute(string $uuid): void

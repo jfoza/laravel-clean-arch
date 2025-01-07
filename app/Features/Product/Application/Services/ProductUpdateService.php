@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace App\Features\Product\Application\Services;
 
 use App\Common\Application\Application;
-use App\Exceptions\AppException;
+use App\Exceptions\ConflictHttpException;
+use App\Exceptions\NotFoundHttpException;
 use App\Features\Product\Application\Validations\ProductValidations;
 use App\Features\Product\Domain\Dto\ProductUpdateDtoInterface;
 use App\Features\Product\Domain\Entities\Product;
@@ -20,7 +21,8 @@ class ProductUpdateService extends Application implements ProductUpdateServiceIn
     }
 
     /**
-     * @throws AppException
+     * @throws NotFoundHttpException
+     * @throws ConflictHttpException
      * @throws Exception
      */
     public function execute(string $uuid, ProductUpdateDtoInterface $productUpdateDto): Product

@@ -3,15 +3,16 @@ declare(strict_types=1);
 
 namespace App\Features\Product\Domain\Props;
 
+use App\Common\Domain\ValueObjects\Date;
 use App\Features\Product\Domain\ValueObjects\UniqueProductDescription;
 
-class ProductProps
+interface ProductProps
 {
-    public string $description;
-    public ?string $details = null;
-    public UniqueProductDescription $uniqueName;
-    public float $value;
-    public int $quantity;
-    public bool $active;
-    public ?string $createdAt = null;
+    public string $description { get; set; }
+    public ?string $details { get; set; }
+    public UniqueProductDescription $uniqueName { get; set; }
+    public float $value { get; set; }
+    public int $quantity { get; set; }
+    public bool $active { get; set; }
+    public ?Date $createdAt { get; set; }
 }

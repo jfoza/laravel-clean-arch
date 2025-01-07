@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace App\Common\Domain\Entities;
 
-use App\Libraries\Uuid\Uuid;
+use App\Common\Domain\ValueObjects\UniqueEntityId;
 
 abstract class Entity
 {
-    public readonly string $uuid;
-    protected string $currentDate { get => date('Y-m-d H:i:s'); }
+    private readonly UniqueEntityId $uniqueEntityId;
 
-    public function __construct(?string $uuid = null) {
-        $this->uuid = $uuid ?? Uuid::v4();
+    public function __construct(?UniqueEntityId $uniqueEntityId = null) {
+        $this->uniqueEntityId = $uniqueEntityId ?? UniqueEntityId::create();
     }
+
+    public string $uuid { get => $this->uniqueEntityId->toValue(); }
 }
