@@ -28,15 +28,7 @@ show_commands () {
     echo
 }
 
-devops_exists (){
-    if [ ! -d "$devops_dir" ]; then
-        git clone git@github.com:jfoza/devops-docker-compose.git
-    fi
-}
-
 devops_start () {
-    devops_exists
-    # shellcheck disable=SC2164
     cd $devops_dir;
     if  ! docker ps | grep -F -q "devops_traefik"; then
         sh dev start traefik
